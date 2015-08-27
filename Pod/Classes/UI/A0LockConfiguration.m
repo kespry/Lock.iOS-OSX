@@ -76,6 +76,16 @@
     return self.social;
 }
 
+- (NSArray *)socialConnections {
+  NSMutableArray *connections = [NSMutableArray array];
+  for (A0Strategy *strategy in self.social) {
+    for (A0Connection *conn in strategy.connections) {
+      [connections addObject:conn];
+    }
+  }
+  return connections;
+}
+
 - (NSArray *)enterpriseStrategies {
     return self.enterprise;
 }

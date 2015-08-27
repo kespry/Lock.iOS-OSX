@@ -23,6 +23,7 @@
 #import "A0SocialLoginViewController.h"
 #import "A0Application.h"
 #import "A0Strategy.h"
+#import "A0Connection.h"
 #import "A0IdentityProviderAuthenticator.h"
 #import "UIButton+A0SolidButton.h"
 #import "A0ServiceTableViewCell.h"
@@ -72,18 +73,18 @@ AUTH0_DYNAMIC_LOGGER_METHODS
     UINib *cellNib = [UINib nibWithNibName:@"A0ServiceTableViewCell" bundle:[NSBundle bundleForClass:self.class]];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:kCellIdentifier];
     self.services = [[A0ServicesTheme alloc] init];
-    self.activeServices = self.configuration.socialStrategies;
+    self.activeServices = self.configuration.socialConnections;
     self.selectedService = NSNotFound;
 }
 
 - (void)triggerAuth:(UIButton *)sender {
     @weakify(self);
     self.selectedService = sender.tag;
-    A0Strategy *strategy = self.activeServices[sender.tag];
+    A0Connection *connection = self.activeServices[sender.tag];
 
     A0APIClientAuthenticationSuccess successBlock = ^(A0UserProfile *profile, A0Token *token){
         @strongify(self);
-        [self postLoginSuccessfulForConnection:strategy.connections.firstObject];
+        [self postLoginSuccessfulForConnection:connection];
         [self setInProgress:NO];
         if (self.onLoginBlock) {
             self.onLoginBlock(profile, token);
@@ -107,15 +108,15 @@ AUTH0_DYNAMIC_LOGGER_METHODS
                     A0ShowAlertErrorView(error.localizedDescription, error.localizedFailureReason);
                     break;
                 default:
-                    A0ShowAlertErrorView(A0LocalizedString(@"There was an error logging in"), [A0Errors localizedStringForConnectionName:strategy.name loginError:error]);
+                    A0ShowAlertErrorView(A0LocalizedString(@"There was an error logging in"), [A0Errors localizedStringForConnectionName:connection.name loginError:error]);
                     break;
             }
         }
     };
     [self setInProgress:YES];
     A0IdentityProviderAuthenticator *authenticator = [self a0_identityAuthenticatorFromProvider:self.lock];
-    A0LogVerbose(@"Authenticating with connection %@", strategy.name);
-    [authenticator authenticateWithConnectionName:strategy.name parameters:self.parameters success:successBlock failure:failureBlock];
+    A0LogVerbose(@"Authenticating with connection %@", connection.name);
+    [authenticator authenticateWithConnectionName:connection.name parameters:self.parameters success:successBlock failure:failureBlock];
 }
 
 - (CGRect)rectToKeepVisibleInView:(UIView *)view {

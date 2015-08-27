@@ -405,5 +405,18 @@
 		<key>selected_background_color</key>
 		<string>9B6014</string>
 	</dict>
+	<key>dropbox</key>
+	<dict>
+		<key>title</key>
+		<string>dropbox</string>
+		<key>foreground_color</key>
+		<string>ffffff</string>
+		<key>icon_character</key>
+		<string>d</string>
+		<key>background_color</key>
+		<string>7b8994</string>
+		<key>selected_background_color</key>
+		<string>47525d</string>
+	</dict>
 </dict>
 </plist>

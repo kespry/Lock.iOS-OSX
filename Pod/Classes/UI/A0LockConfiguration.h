@@ -34,6 +34,8 @@
 
 - (NSArray *)socialStrategies;
 
+- (NSArray *)socialConnections;
+
 - (NSArray *)enterpriseStrategies;
 
 - (A0Strategy *)activeDirectoryStrategy;
